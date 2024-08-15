@@ -16,35 +16,46 @@ dependencies {
     compileOnly('org.ow2.asm:asm-tree:6.2')
 }
 
-java.disableAutoTargetJvm()
-
-jar {
-    archiveFileName = "${project_id}-common-${version}.jar"
+tasks.withType(ProcessResources).configureEach {
+    filesMatching([
+            'plugin.yml',
+            'bungee.yml',
+            'fabric.mod.json',
+            'META-INF/mods.toml', 'mcmod.info', 'pack.mcmeta',
+            'META-INF/sponge_plugins.json',
+            'velocity-plugin.json'
+    ]) {
+        expand project.properties
+    }
 }
+
+java.disableAutoTargetJvm()
 
 shadowJar {
     dependencies {
-        include(dependency("${group_id}:${project_id}:${version}"))
-        exclude('META-INF', 'META-INF/**')
-        exclude('LICENSE')
-        exclude('INFO_BIN', 'INFO_SRC')
-
-        // Tooling
-        include(dependency('dev.neuralnexus:conditional-mixins:0.1.1'))
-
-        // Configurate
-        include(dependency('org.spongepowered:configurate-hocon:4.2.0-SNAPSHOT'))
-        include(dependency('io.leangen.geantyref:geantyref:1.3.15'))
+        exclude('META-INF/maven/')
+        exclude('META-INF/services/')
+        exclude('META-INF/versions/')
+        exclude('plugin.yml')
+        exclude('bungee.yml')
+        exclude('fabric.mod.json')
+        exclude('META-INF/neoforge.mods.toml')
+        exclude('mcmod.info')
+        exclude('pack.mcmeta')
+        exclude('META-INF/sponge_plugins.json')
+        exclude('velocity-plugin.json')
     }
     // Tooling
-    relocate('dev.neuralnexus.conditionalmixins', 'dev.neuralnexus.tatercertified.overseer.lib.conditionalmixins')
+    relocate('dev.neuralnexus', 'ca.taterland.tatercertified.overseer.lib.neuralnexus')
 
     // Configurate
-    relocate('org.spongepowered.configurate', 'dev.neuralnexus.tatercertified.overseer.lib.configurate')
-    relocate('com.typesafe.config', 'dev.neuralnexus.tatercertified.overseer.lib.typesafe.config')
-    relocate('io.leangen.geantyref', 'dev.neuralnexus.tatercertified.overseer.lib.geantyref')
+    relocate('org.spongepowered.configurate', 'ca.taterland.tatercertified.overseer.lib.configurate')
+    relocate('com.typesafe.config', 'ca.taterland.tatercertified.overseer.lib.typesafe.config')
+    relocate('io.leangen.geantyref', 'ca.taterland.tatercertified.overseer.lib.geantyref')
 
-    minimize()
+    minimize() {
+        exclude(dependency(':common'))
+    }
 
     archiveFileName = "${project_id}-common-full-${version}.jar"
 }

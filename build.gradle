@@ -130,8 +130,8 @@ ext.mergeMixinConfigs = { List<File> mixinConfigs ->
     injectors.put("defaultRequire", 1)
     mixinConfigJson.put("injectors", injectors)
     mixinConfigJson.put("required", false)
-    mixinConfigJson.put("plugin", "dev.neuralnexus.tatercertifed.overseer.mixin.plugin.OverseerMixinPlugin")
-    mixinConfigJson.put("package", "dev.neuralnexus.tatercertifed.overseer.mixin")
+    mixinConfigJson.put("plugin", "ca.taterland.tatercertified.overseer.mixin.plugin.OverseerMixinPlugin")
+    mixinConfigJson.put("package", "ca.taterland.tatercertified.overseer.mixin")
     mixinConfigJson.put("mixins", [])
     mixinConfigJson.put("client", [])
     mixinConfigJson.put("server", [])
@@ -180,7 +180,7 @@ ext.bundleJars = { Map<String, List<String>> platformVersions ->
     def mixinConfigs = []
     jarFiles.collect {
         zipTree(it).files.each { file ->
-            if (file.name.startsWith("taterlib.mixins.")) {
+            if (file.name.startsWith("overseer.mixins.")) {
                 mixinConfigs.add(file)
             }
         }
@@ -225,7 +225,7 @@ tasks.register('build_monojar', Jar) {
                 'MixinConfigs': "overseer.mixins.json"
     }
 
-    from(["README.md", "LICENSE", "LICENSE-API"]) {
+    from(["README.md", "LICENSE"]) {
         into("META-INF")
     }
     from {
