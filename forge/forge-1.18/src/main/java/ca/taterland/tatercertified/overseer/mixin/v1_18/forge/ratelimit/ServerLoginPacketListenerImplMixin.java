@@ -47,8 +47,11 @@ public abstract class ServerLoginPacketListenerImplMixin {
 
     @Inject(method = "handleHello", at = @At("HEAD"), cancellable = true)
     public void onHandleIntention(ServerboundHelloPacket pPacket, CallbackInfo ci) {
-        // Return early if in ohSheit mode
-        if (OverseerForge.superAttackMode) return;
+        // Return early if in superAttackMode
+        if (OverseerForge.superAttackMode) {
+            ddosfix$rejectConnection(ci);
+            return;
+        }
 
         String name = pPacket.getGameProfile().getName();
 
