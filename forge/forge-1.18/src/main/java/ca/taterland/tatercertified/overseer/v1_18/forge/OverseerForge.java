@@ -16,20 +16,18 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkConstants;
 
 import java.util.concurrent.ForkJoinPool;
 
-@Mod(OverseerForge.MOD_ID)
 public class OverseerForge {
-    public static final String MOD_ID = "overseer";
     private static final PlayerListCache cache = new PlayerListCache();
     public static int rateLimit = 0;
-    public static boolean ohSheit = false;
+    public static boolean superAttackMode = false;
 
     public OverseerForge() {
         ModLoadingContext.get()
@@ -40,6 +38,33 @@ public class OverseerForge {
                                         () -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
 
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void onRegisterBrigadierCommand(RegisterCommandsEvent event) {
+        LiteralArgumentBuilder<CommandSourceStack> argumentBuilder =
+                literal("ddos")
+                        .requires(source -> source.hasPermission(4))
+                        .then(
+                                argument("truefalse", bool())
+                                        .executes(
+                                                context -> {
+                                                    superAttackMode =
+                                                            context.getArgument(
+                                                                    "truefalse", Boolean.class);
+                                                    context.getSource()
+                                                            .sendSuccess(
+                                                                    new TextComponent(
+                                                                            "§aSet ddos mode to §6"
+                                                                                    + superAttackMode),
+                                                                    true);
+                                                    return Command.SINGLE_SUCCESS;
+                                                }));
+        event.getDispatcher().register(argumentBuilder);
+    }
+
+    @SubscribeEvent
+    public void onServerStarted(ServerStartedEvent event) {
         ForkJoinPool.commonPool()
                 .execute(
                         () -> {
@@ -57,35 +82,12 @@ public class OverseerForge {
                 .execute(
                         () -> {
                             while (true) {
-                                cache.update();
+                                cache.update(event.getServer());
                                 try {
                                     Thread.sleep(30000);
                                 } catch (Exception ignore) {
                                 }
                             }
                         });
-    }
-
-    @SubscribeEvent
-    public void onRegisterBrigadierCommand(RegisterCommandsEvent event) {
-        LiteralArgumentBuilder<CommandSourceStack> argumentBuilder =
-                literal("ddos")
-                        .requires(source -> source.hasPermission(4))
-                        .then(
-                                argument("truefalse", bool())
-                                        .executes(
-                                                context -> {
-                                                    ohSheit =
-                                                            context.getArgument(
-                                                                    "truefalse", Boolean.class);
-                                                    context.getSource()
-                                                            .sendSuccess(
-                                                                    new TextComponent(
-                                                                            "§aSet ddos mode to §6"
-                                                                                    + ohSheit),
-                                                                    true);
-                                                    return Command.SINGLE_SUCCESS;
-                                                }));
-        event.getDispatcher().register(argumentBuilder);
     }
 }

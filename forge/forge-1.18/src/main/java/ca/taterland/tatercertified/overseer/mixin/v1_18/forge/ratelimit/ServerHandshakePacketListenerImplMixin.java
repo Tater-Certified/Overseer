@@ -41,7 +41,7 @@ public abstract class ServerHandshakePacketListenerImplMixin {
 
     @Inject(method = "handleIntention", at = @At("HEAD"), cancellable = true)
     public void onHandleIntention(ClientIntentionPacket pPacket, CallbackInfo ci) {
-        if (!OverseerForge.ohSheit) return;
+        if (!OverseerForge.superAttackMode) return;
         if (pPacket.getIntention() != ConnectionProtocol.LOGIN) return;
         if (OverseerForge.rateLimit > 0) {
             this.shadow$getConnection().send(ddosfix$disconnectPacket);

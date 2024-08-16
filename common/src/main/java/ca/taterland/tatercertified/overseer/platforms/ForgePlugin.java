@@ -5,6 +5,7 @@
 package ca.taterland.tatercertified.overseer.platforms;
 
 import ca.taterland.tatercertified.overseer.Overseer;
+import ca.taterland.tatercertified.overseer.util.ReflectionUtil;
 
 import net.minecraftforge.fml.common.Mod;
 
@@ -18,5 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ForgePlugin {
     public ForgePlugin() {
         Overseer.instance().onEnable();
+        ReflectionUtil.newInstance(
+                "ca.taterland.tatercertified.overseer.v1_18.forge.OverseerForge");
     }
 }

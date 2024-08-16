@@ -13,7 +13,7 @@ displayURL = "${homepage_url}"
 logoFile = "${project_name}.png"
 credits = "${authors}"
 authors = "${authors}"
-displayTest = "IGNORE_SERVER_VERSION"
+displayTest = "NONE"
 description = '''${project_description}'''
 
 # Forge Dependency

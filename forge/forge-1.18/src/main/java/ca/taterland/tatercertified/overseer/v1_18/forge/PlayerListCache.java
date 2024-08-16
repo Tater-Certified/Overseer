@@ -11,7 +11,6 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.UserWhiteListEntry;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.Map;
 import java.util.Set;
@@ -22,9 +21,7 @@ public class PlayerListCache implements GameProfileCacheBridge, StoredUserEntryB
 
     PlayerListCache() {}
 
-    public void update() {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-
+    public void update(MinecraftServer server) {
         Map<String, ?> cache = this.bridge$getProfilesbyName(server.getProfileCache());
         usercache.clear();
         usercache.addAll(cache.keySet());
