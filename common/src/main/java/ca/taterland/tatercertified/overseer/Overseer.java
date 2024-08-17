@@ -4,6 +4,7 @@
  */
 package ca.taterland.tatercertified.overseer;
 
+import ca.taterland.tatercertified.overseer.ddos.PlayerListCache;
 import dev.neuralnexus.taterapi.MinecraftVersion;
 import dev.neuralnexus.taterapi.Platform;
 import dev.neuralnexus.taterapi.logger.Logger;
@@ -19,7 +20,10 @@ public class Overseer {
 
     private static final Overseer instance = new Overseer();
     private static final Logger logger = Logger.create(PROJECT_ID);
-    private static boolean RELOADED = false;
+
+    public static final PlayerListCache cache = new PlayerListCache();
+    public static int rateLimit = 0;
+    public static boolean superAttackMode = false;
 
     public static Logger logger() {
         return logger;

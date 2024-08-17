@@ -6,7 +6,7 @@ package ca.taterland.tatercertified.overseer.mixin.v1_18.forge.ratelimit;
 
 import static ca.taterland.tatercertified.overseer.mixin.v1_18.forge.ratelimit.RateLimitHelper.rejectConnection;
 
-import ca.taterland.tatercertified.overseer.v1_18.forge.OverseerForge;
+import ca.taterland.tatercertified.overseer.Overseer;
 
 import dev.neuralnexus.conditionalmixins.annotations.ReqMCVersion;
 import dev.neuralnexus.conditionalmixins.annotations.ReqMappings;
@@ -33,12 +33,12 @@ public abstract class ServerHandshakePacketListenerImplMixin {
 
     @Inject(method = "handleIntention", at = @At("HEAD"), cancellable = true)
     public void onHandleIntention(ClientIntentionPacket pPacket, CallbackInfo ci) {
-        if (!OverseerForge.superAttackMode) return;
+        if (!Overseer.superAttackMode) return;
         if (pPacket.getIntention() != ConnectionProtocol.LOGIN) return;
-        if (OverseerForge.rateLimit > 0) {
+        if (Overseer.rateLimit > 0) {
             rejectConnection(shadow$getConnection(), ci);
             return;
         }
-        OverseerForge.rateLimit++;
+        Overseer.rateLimit++;
     }
 }

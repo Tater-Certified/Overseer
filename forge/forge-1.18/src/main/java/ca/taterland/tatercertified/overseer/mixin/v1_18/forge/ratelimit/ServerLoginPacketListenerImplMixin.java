@@ -6,8 +6,8 @@ package ca.taterland.tatercertified.overseer.mixin.v1_18.forge.ratelimit;
 
 import static ca.taterland.tatercertified.overseer.mixin.v1_18.forge.ratelimit.RateLimitHelper.rejectConnection;
 
-import ca.taterland.tatercertified.overseer.v1_18.forge.OverseerForge;
-import ca.taterland.tatercertified.overseer.v1_18.forge.PlayerListCache;
+import ca.taterland.tatercertified.overseer.Overseer;
+import ca.taterland.tatercertified.overseer.ddos.PlayerListCache;
 
 import dev.neuralnexus.conditionalmixins.annotations.ReqMCVersion;
 import dev.neuralnexus.conditionalmixins.annotations.ReqMappings;
@@ -34,7 +34,7 @@ public abstract class ServerLoginPacketListenerImplMixin {
     @Inject(method = "handleHello", at = @At("HEAD"), cancellable = true)
     public void onHandleIntention(ServerboundHelloPacket pPacket, CallbackInfo ci) {
         // Return early if in superAttackMode
-        if (OverseerForge.superAttackMode) {
+        if (Overseer.superAttackMode) {
             rejectConnection(shadow$getConnection(), ci);
             return;
         }
@@ -51,10 +51,10 @@ public abstract class ServerLoginPacketListenerImplMixin {
         if (PlayerListCache.checkName(name)) return;
 
         // Rate limit the rest
-        if (OverseerForge.rateLimit > 0) {
+        if (Overseer.rateLimit > 0) {
             rejectConnection(shadow$getConnection(), ci);
             return;
         }
-        OverseerForge.rateLimit++;
+        Overseer.rateLimit++;
     }
 }
