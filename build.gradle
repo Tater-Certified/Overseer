@@ -208,7 +208,7 @@ tasks.register('build_monojar', Jar) {
         }
     }
 
-    String mc_version = 'b1.7.3-1.21'
+    String mc_version = '1.14-1.21'
     archiveFileName = "${project_id}-${version}.jar"
     destinationDirectory = file("./build/libs")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

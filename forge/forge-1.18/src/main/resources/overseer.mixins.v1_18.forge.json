@@ -7,9 +7,6 @@
   "required": false,
   "package": "ca.taterland.tatercertified.overseer.mixin",
   "mixins": [
-    "v1_18.forge.accessor.GameProfileCacheAccessor",
-    "v1_18.forge.accessor.StoredUserEntryAccessor",
-    "v1_18.forge.ratelimit.ServerHandshakePacketListenerImplMixin",
     "v1_18.forge.ratelimit.ServerLoginPacketListenerImplMixin"
   ]
 }

@@ -4,7 +4,7 @@ author: '${authors}'
 description: '${project_description}'
 website: '${homepage_url}'
 main: '${group_id}.${project_id}.platforms.BukkitPlugin'
-depend: []
-depends: []
+depend: [ TaterLib ]
+depends: [ TaterLib ]
 softdepends: [ ]
 folia-supported: true

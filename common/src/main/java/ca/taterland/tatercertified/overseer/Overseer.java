@@ -5,8 +5,11 @@
 package ca.taterland.tatercertified.overseer;
 
 import ca.taterland.tatercertified.overseer.ddos.PlayerListCache;
+
 import dev.neuralnexus.taterapi.MinecraftVersion;
 import dev.neuralnexus.taterapi.Platform;
+import dev.neuralnexus.taterapi.TaterAPIProvider;
+import dev.neuralnexus.taterapi.event.api.ServerEvents;
 import dev.neuralnexus.taterapi.logger.Logger;
 
 /** Main class for the plugin. */
@@ -23,7 +26,6 @@ public class Overseer {
 
     public static final PlayerListCache cache = new PlayerListCache();
     public static int rateLimit = 0;
-    public static boolean superAttackMode = false;
 
     public static Logger logger() {
         return logger;
@@ -52,6 +54,25 @@ public class Overseer {
 
         // Register API
         //        OverseerAPIProvider.register(new OverseerAPI());
+
+        Overseer.cache.addNameSource(
+                () -> TaterAPIProvider.api().get().server().whitelist().keySet());
+        Overseer.cache.addNameSource(
+                () -> TaterAPIProvider.api().get().server().playercache().keySet());
+
+        TaterAPIProvider.scheduler()
+                .repeatAsync(
+                        () -> {
+                            if (Overseer.rateLimit > 0) {
+                                Overseer.rateLimit = 0;
+                            }
+                        },
+                        0L,
+                        20L);
+        ServerEvents.STARTED.register(
+                event ->
+                        TaterAPIProvider.scheduler()
+                                .repeatAsync(Overseer.cache::refresh, 0L, 20 * 30L));
 
         logger().info(PROJECT_NAME + " has been started!");
     }

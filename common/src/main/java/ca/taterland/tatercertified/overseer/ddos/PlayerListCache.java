@@ -17,14 +17,14 @@ public class PlayerListCache {
 
     public PlayerListCache() {}
 
-    public void addNameSource(Supplier<Set<String>> updateFunction) {
-        nameSources.add(updateFunction);
+    public void addNameSource(Supplier<Set<String>> source) {
+        nameSources.add(source);
     }
 
     public void refresh() {
         usercache.clear();
-        for (Supplier<Set<String>> updateFunction : nameSources) {
-            usercache.addAll(updateFunction.get());
+        for (Supplier<Set<String>> source : nameSources) {
+            usercache.addAll(source.get());
         }
     }
 

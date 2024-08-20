@@ -15,7 +15,9 @@
     "logoFile": "./${project_name}.png",
     "screenshots": [],
     "useDependencyInformation": true,
-    "dependencies": [],
+    "dependencies": [
+      "taterlib"
+    ],
     "dependants": []
   }
 ]

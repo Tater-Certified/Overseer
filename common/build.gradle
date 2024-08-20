@@ -4,12 +4,16 @@ plugins {
 
 dependencies {
     // Tooling
-    implementation('dev.neuralnexus:conditional-mixins:0.1.1')
+    compileOnly("dev.neuralnexus:taterapi:${taterlib_version}")
+    compileOnly('dev.neuralnexus:conditional-mixins:0.1.1')
     compileOnly('dev.neuralnexus:entrypoint-spoof:0.1.11')
 
     // Configurate
-    implementation('org.spongepowered:configurate-hocon:4.2.0-SNAPSHOT')
-    implementation('io.leangen.geantyref:geantyref:1.3.15')
+    compileOnly('org.spongepowered:configurate-hocon:4.2.0-SNAPSHOT')
+    compileOnly('io.leangen.geantyref:geantyref:1.3.15')
+
+    // Brigadier
+    compileOnly('com.mojang:brigadier:1.0.18')
 
     // Mixin
     compileOnly('org.spongepowered:mixin:0.8.5')
@@ -49,12 +53,17 @@ shadowJar {
         exclude('velocity-plugin.json')
     }
     // Tooling
-    relocate('dev.neuralnexus', 'ca.taterland.tatercertified.overseer.lib.neuralnexus')
+//    relocate('dev.neuralnexus', 'ca.taterland.tatercertified.overseer.lib.neuralnexus')
 
     // Configurate
-    relocate('org.spongepowered.configurate', 'ca.taterland.tatercertified.overseer.lib.configurate')
-    relocate('com.typesafe.config', 'ca.taterland.tatercertified.overseer.lib.typesafe.config')
-    relocate('io.leangen.geantyref', 'ca.taterland.tatercertified.overseer.lib.geantyref')
+//    relocate('org.spongepowered.configurate', 'ca.taterland.tatercertified.overseer.lib.configurate')
+//    relocate('com.typesafe.config', 'ca.taterland.tatercertified.overseer.lib.typesafe.config')
+//    relocate('io.leangen.geantyref', 'ca.taterland.tatercertified.overseer.lib.geantyref')
+
+    // TaterLib bundled dependencies
+    relocate('org.spongepowered.configurate', 'dev.neuralnexus.taterlib.lib.configurate')
+    relocate('com.typesafe.config', 'dev.neuralnexus.taterlib.lib.typesafe.config')
+    relocate('io.leangen.geantyref', 'dev.neuralnexus.taterlib.lib.geantyref')
 
     minimize() {
         exclude(dependency(':common'))

@@ -2,9 +2,7 @@
  * Copyright (c) 2024 Dylan Sperrer - dylan@sperrer.ca
  * The project is Licensed under <a href="https://github.com/Tater-Certified/Overseer/blob/dev/LICENSE">MIT</a>
  */
-package ca.taterland.tatercertified.overseer.mixin.v1_18.forge.ratelimit;
-
-import static ca.taterland.tatercertified.overseer.mixin.v1_18.forge.ratelimit.RateLimitHelper.rejectConnection;
+package ca.taterland.tatercertified.overseer.mixin.v1_18.vanilla.ratelimit;
 
 import ca.taterland.tatercertified.overseer.Overseer;
 
@@ -36,7 +34,7 @@ public abstract class ServerHandshakePacketListenerImplMixin {
         if (!Overseer.superAttackMode) return;
         if (pPacket.getIntention() != ConnectionProtocol.LOGIN) return;
         if (Overseer.rateLimit > 0) {
-            rejectConnection(shadow$getConnection(), ci);
+            RateLimitHelper.rejectConnection(shadow$getConnection(), ci);
             return;
         }
         Overseer.rateLimit++;

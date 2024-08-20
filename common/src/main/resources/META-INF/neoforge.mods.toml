@@ -33,3 +33,12 @@ type="required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+# TaterLib Dependency
+[[dependencies.${project_id}]]
+modId = "taterlib"
+mandatory = true
+type = "required"
+versionRange = "[${taterlib_version},)"
+ordering = "BEFORE"
+side = "BOTH"

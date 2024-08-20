@@ -2,7 +2,7 @@
  * Copyright (c) 2024 Dylan Sperrer - dylan@sperrer.ca
  * The project is Licensed under <a href="https://github.com/Tater-Certified/Overseer/blob/dev/LICENSE">MIT</a>
  */
-package ca.taterland.tatercertified.overseer.mixin.v1_18.forge.ratelimit;
+package ca.taterland.tatercertified.overseer.mixin.v1_18.vanilla.ratelimit;
 
 import ca.taterland.tatercertified.overseer.Overseer;
 import ca.taterland.tatercertified.overseer.ddos.PlayerListCache;
@@ -13,15 +13,11 @@ import dev.neuralnexus.taterapi.Mappings;
 import dev.neuralnexus.taterapi.MinecraftVersion;
 
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.login.ClientboundLoginDisconnectPacket;
 import net.minecraft.network.protocol.login.ServerboundHelloPacket;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,25 +29,19 @@ public abstract class ServerLoginPacketListenerImplMixin {
     @Shadow
     public abstract Connection shadow$getConnection();
 
-    @Unique private static final Component overseer$reason =
-            new TranslatableComponent("multiplayer.disconnect.unverified_username");
-
-    @Unique private static final ClientboundLoginDisconnectPacket overseer$disconnectPacket =
-            new ClientboundLoginDisconnectPacket(overseer$reason);
-
-    @Unique private static void overseer$rejectConnection(Connection conn, CallbackInfo ci) {
-        conn.send(overseer$disconnectPacket);
-        conn.disconnect(overseer$reason);
-        ci.cancel();
-    }
-
     @Inject(method = "handleHello", at = @At("HEAD"), cancellable = true)
     public void onHandleIntention(ServerboundHelloPacket pPacket, CallbackInfo ci) {
+        // Return early if in superAttackMode
+        if (Overseer.superAttackMode) {
+            RateLimitHelper.rejectConnection(shadow$getConnection(), ci);
+            return;
+        }
+
         String name = pPacket.getGameProfile().getName();
 
         // We know these are bad
         if (name.startsWith("FifthColumn")) {
-            overseer$rejectConnection(shadow$getConnection(), ci);
+            RateLimitHelper.rejectConnection(shadow$getConnection(), ci);
             return;
         }
 
@@ -60,7 +50,7 @@ public abstract class ServerLoginPacketListenerImplMixin {
 
         // Rate limit the rest
         if (Overseer.rateLimit > 0) {
-            overseer$rejectConnection(shadow$getConnection(), ci);
+            RateLimitHelper.rejectConnection(shadow$getConnection(), ci);
             return;
         }
         Overseer.rateLimit++;

@@ -19,8 +19,8 @@
       },
       "dependencies": [
         {
-          "id": "spongeapi",
-          "version": "${spongeapi_version}",
+          "id": "taterlib",
+          "version": "${taterlib_version}",
           "load-order": "after",
           "optional": false
         }
