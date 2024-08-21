@@ -16,6 +16,7 @@ import org.spongepowered.api.plugin.Plugin;
         name = Overseer.PROJECT_NAME,
         version = Overseer.PROJECT_VERSION,
         description = Overseer.PROJECT_DESCRIPTION)
+@SuppressWarnings("unused")
 public class Sponge7Plugin {
     @Inject
     public Sponge7Plugin() {

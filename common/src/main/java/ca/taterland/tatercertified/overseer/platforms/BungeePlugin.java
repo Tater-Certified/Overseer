@@ -9,6 +9,7 @@ import ca.taterland.tatercertified.overseer.Overseer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 /** Bungee entry point. */
+@SuppressWarnings("unused")
 public class BungeePlugin extends Plugin {
     public BungeePlugin() {
         Overseer.instance().onEnable();

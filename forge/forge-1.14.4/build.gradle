@@ -1,0 +1,32 @@
+plugins {
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.unimined)
+}
+
+unimined.minecraft(sourceSets.main) {
+    version(minecraft_version)
+    minecraftForge {
+        loader(forge_version)
+        mixinConfig("overseer.mixins.v1_14_4.forge.json")
+    }
+    mappings {
+        mojmap()
+        devFallbackNamespace("official")
+    }
+    defaultRemapJar = false
+    remap(jar) {
+        prodNamespace("searge")
+        mixinRemap {
+            disableRefmap()
+        }
+        archiveFileName = "${project_id}-forge-${minecraft_version}-${project.version}.jar"
+    }
+}
+
+tasks.build.dependsOn(remapJar)
+
+dependencies {
+    compileOnly('org.spongepowered:mixin:0.8.5')
+    compileOnly('dev.neuralnexus:conditional-mixins:0.1.1')
+    compileOnly(project(':common'))
+}

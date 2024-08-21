@@ -9,6 +9,7 @@ import ca.taterland.tatercertified.overseer.Overseer;
 import net.fabricmc.api.ModInitializer;
 
 /** Fabric entry point. */
+@SuppressWarnings("unused")
 public class FabricPlugin implements ModInitializer {
     public FabricPlugin() {
         Overseer.instance().onEnable();

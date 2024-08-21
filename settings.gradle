@@ -62,6 +62,13 @@ rootProject.name = 'Overseer'
 
 include(
         'common',
-        'forge:forge-1.18',
-        'vanilla:vanilla-1.18'
+
+        'forge:forge-1.14.4',
+        'forge:forge-1.17.1',
+        'forge:forge-1.19',
+        'forge:forge-1.19.4',
+
+        'vanilla:vanilla-1.14.4',
+        'vanilla:vanilla-1.19',
+        'vanilla:vanilla-1.19.4'
 )

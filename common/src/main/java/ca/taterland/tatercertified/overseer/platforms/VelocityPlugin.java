@@ -19,6 +19,7 @@ import com.velocitypowered.api.plugin.Plugin;
         description = Overseer.PROJECT_DESCRIPTION,
         url = Overseer.PROJECT_URL,
         dependencies = {@Dependency(id = "taterlib")})
+@SuppressWarnings("unused")
 public class VelocityPlugin {
     @Inject
     public VelocityPlugin() {

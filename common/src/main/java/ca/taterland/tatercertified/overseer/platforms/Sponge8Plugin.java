@@ -12,6 +12,7 @@ import org.spongepowered.plugin.builtin.jvm.Plugin;
 
 /** Sponge entry point. */
 @Plugin(Overseer.PROJECT_ID)
+@SuppressWarnings("unused")
 public class Sponge8Plugin {
     @Inject
     public Sponge8Plugin() {

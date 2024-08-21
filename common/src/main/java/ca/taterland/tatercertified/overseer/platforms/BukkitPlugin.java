@@ -9,6 +9,7 @@ import ca.taterland.tatercertified.overseer.Overseer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /** Bukkit entry point. */
+@SuppressWarnings("unused")
 public class BukkitPlugin extends JavaPlugin {
     public BukkitPlugin() {
         Overseer.instance().onEnable();

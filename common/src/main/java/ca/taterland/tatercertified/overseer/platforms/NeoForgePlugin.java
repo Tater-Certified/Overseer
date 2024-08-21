@@ -10,6 +10,7 @@ import net.neoforged.fml.common.Mod;
 
 /** NeoForge entry point. */
 @Mod(Overseer.PROJECT_ID)
+@SuppressWarnings("unused")
 public class NeoForgePlugin {
     public NeoForgePlugin() {
         Overseer.instance().onEnable();
