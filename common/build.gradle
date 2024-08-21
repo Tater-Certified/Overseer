@@ -45,20 +45,10 @@ shadowJar {
         exclude('META-INF/versions/')
         exclude('plugin.yml')
         exclude('bungee.yml')
-        exclude('fabric.mod.json')
-        exclude('META-INF/neoforge.mods.toml')
         exclude('mcmod.info')
         exclude('pack.mcmeta')
-        exclude('META-INF/sponge_plugins.json')
         exclude('velocity-plugin.json')
     }
-    // Tooling
-//    relocate('dev.neuralnexus', 'ca.taterland.tatercertified.overseer.lib.neuralnexus')
-
-    // Configurate
-//    relocate('org.spongepowered.configurate', 'ca.taterland.tatercertified.overseer.lib.configurate')
-//    relocate('com.typesafe.config', 'ca.taterland.tatercertified.overseer.lib.typesafe.config')
-//    relocate('io.leangen.geantyref', 'ca.taterland.tatercertified.overseer.lib.geantyref')
 
     // TaterLib bundled dependencies
     relocate('org.spongepowered.configurate', 'dev.neuralnexus.taterlib.lib.configurate')

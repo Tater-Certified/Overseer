@@ -63,6 +63,10 @@ rootProject.name = 'Overseer'
 include(
         'common',
 
+        'fabric:fabric-1.14.4',
+        'fabric:fabric-1.19',
+        'fabric:fabric-1.19.4',
+
         'forge:forge-1.14.4',
         'forge:forge-1.17.1',
         'forge:forge-1.19',

@@ -2,7 +2,7 @@
  * Copyright (c) 2024 Dylan Sperrer - dylan@sperrer.ca
  * The project is Licensed under <a href="https://github.com/Tater-Certified/Overseer/blob/dev/LICENSE">MIT</a>
  */
-package ca.taterland.tatercertified.overseer.mixin.v1_14_4.vanilla.ratelimit;
+package ca.taterland.tatercertified.overseer.mixin.v1_14_4.fabric.ratelimit;
 
 import ca.taterland.tatercertified.overseer.ddos.ConnectionHandler;
 
@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@ReqMappings(Mappings.MOJMAP)
-@ReqMCVersion(min = MinecraftVersion.V1_14, max = MinecraftVersion.V1_18_2)
+@ReqMappings(Mappings.INTERMEDIARY)
+@ReqMCVersion(min = MinecraftVersion.V1_14_4, max = MinecraftVersion.V1_18_2)
 @Mixin(ServerLoginPacketListenerImpl.class)
 public abstract class ServerLoginPacketListenerImplMixin {
     @Shadow
