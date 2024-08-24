@@ -22,10 +22,10 @@ public class ConnectionHandler {
         if (PlayerNameCache.checkName(event.name())) return;
 
         // Rate limit the rest
-        if (Overseer.rateLimit > 0) {
+        if (Overseer.rate > Overseer.rateLimit) {
             event.setCancelled(true);
             return;
         }
-        Overseer.rateLimit++;
+        Overseer.rate++;
     }
 }

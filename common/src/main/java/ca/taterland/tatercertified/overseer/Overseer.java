@@ -30,7 +30,8 @@ public class Overseer {
     private static final Logger logger = Logger.create(PROJECT_ID);
 
     public static final PlayerNameCache cache = new PlayerNameCache();
-    public static int rateLimit = 0;
+    public static int rateLimit;
+    public static int rate = 0;
 
     public static Logger logger() {
         return logger;
@@ -65,6 +66,8 @@ public class Overseer {
         if (config.checkModule("ddos")) {
             OverseerEvents.HANDLE_HELLO.register(ConnectionHandler::handleHello);
 
+            rateLimit = config.ddos().rateLimit();
+
             if (config.ddos().useUsercache()) {
                 Overseer.cache.addNameSource(
                         () -> TaterAPIProvider.api().get().server().playercache().keySet());
@@ -81,8 +84,8 @@ public class Overseer {
             TaterAPIProvider.scheduler()
                     .repeatAsync(
                             () -> {
-                                if (Overseer.rateLimit > config.ddos().rateLimit()) {
-                                    Overseer.rateLimit = 0;
+                                if (Overseer.rate > config.ddos().rateLimit()) {
+                                    Overseer.rate = 0;
                                 }
                             },
                             0L,
