@@ -7,23 +7,24 @@ package ca.taterland.tatercertified.overseer.ddos;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class PlayerListCache {
+public class PlayerNameCache {
     private static final Set<String> usercache = Sets.newConcurrentHashSet();
-    private static final List<Supplier<Set<String>>> nameSources = new ArrayList<>();
+    private static final List<Supplier<Collection<String>>> nameSources = new ArrayList<>();
 
-    public PlayerListCache() {}
+    public PlayerNameCache() {}
 
-    public void addNameSource(Supplier<Set<String>> source) {
+    public void addNameSource(Supplier<Collection<String>> source) {
         nameSources.add(source);
     }
 
     public void refresh() {
         usercache.clear();
-        for (Supplier<Set<String>> source : nameSources) {
+        for (Supplier<Collection<String>> source : nameSources) {
             usercache.addAll(source.get());
         }
     }

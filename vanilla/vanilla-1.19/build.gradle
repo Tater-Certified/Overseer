@@ -15,6 +15,7 @@ minecraft {
 
 dependencies {
     compileOnly('org.spongepowered:mixin:0.8.5')
+    compileOnly("dev.neuralnexus:taterapi:${taterlib_version}")
     compileOnly('dev.neuralnexus:conditional-mixins:0.1.1')
     compileOnly(project(':common'))
 }

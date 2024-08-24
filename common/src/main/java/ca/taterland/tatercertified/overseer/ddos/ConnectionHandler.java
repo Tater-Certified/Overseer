@@ -5,23 +5,25 @@
 package ca.taterland.tatercertified.overseer.ddos;
 
 import ca.taterland.tatercertified.overseer.Overseer;
-
-import java.net.SocketAddress;
+import ca.taterland.tatercertified.overseer.api.events.HandleHelloEvent;
+import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
 
 public class ConnectionHandler {
-    public static void handleHello(String name, SocketAddress ip, Runnable rejectCallback) {
-        // We know these are bad
-        if (name.startsWith("FifthColumn")) {
-            rejectCallback.run();
-            return;
+    public static void handleHello(HandleHelloEvent event) {
+        // Check the bad names
+        for (String badName : OverseerConfigLoader.config().ddos().badNames()) {
+            if (event.name().startsWith(badName)) {
+                event.setCancelled(true);
+                return;
+            }
         }
 
-        // Check if we know em
-        if (PlayerListCache.checkName(name)) return;
+        // Check the name cache to see if they should be skipped
+        if (PlayerNameCache.checkName(event.name())) return;
 
         // Rate limit the rest
         if (Overseer.rateLimit > 0) {
-            rejectCallback.run();
+            event.setCancelled(true);
             return;
         }
         Overseer.rateLimit++;

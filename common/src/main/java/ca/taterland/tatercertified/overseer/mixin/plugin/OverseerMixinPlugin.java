@@ -4,7 +4,10 @@
  */
 package ca.taterland.tatercertified.overseer.mixin.plugin;
 
+import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
+
 import dev.neuralnexus.conditionalmixins.ConditionalMixins;
+import dev.neuralnexus.taterapi.config.MixinConfig;
 
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -26,8 +29,9 @@ public class OverseerMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        //        MixinConfig config = TaterLibConfigLoader.config().mixin();
-        return ConditionalMixins.shouldApplyMixin(mixinClassName, true);
+        MixinConfig config = OverseerConfigLoader.config().mixin();
+        return ConditionalMixins.shouldApplyMixin(
+                mixinClassName, config.disabled(), config.verbose());
     }
 
     @Override

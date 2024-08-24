@@ -4,7 +4,8 @@
  */
 package ca.taterland.tatercertified.overseer.mixin.v1_19.fabric.ratelimit;
 
-import ca.taterland.tatercertified.overseer.ddos.ConnectionHandler;
+import ca.taterland.tatercertified.overseer.api.events.HandleHelloEvent;
+import ca.taterland.tatercertified.overseer.api.events.OverseerEvents;
 
 import dev.neuralnexus.conditionalmixins.annotations.ReqMCVersion;
 import dev.neuralnexus.conditionalmixins.annotations.ReqMappings;
@@ -45,9 +46,10 @@ public abstract class ServerLoginPacketListenerImplMixin {
 
     @Inject(method = "handleHello", at = @At("HEAD"), cancellable = true)
     public void onHandleIntention(ServerboundHelloPacket packet, CallbackInfo ci) {
-        ConnectionHandler.handleHello(
-                packet.name(),
-                this.shadow$getConnection().getRemoteAddress(),
-                () -> this.overseer$rejectConnection(this.shadow$getConnection(), ci));
+        OverseerEvents.HANDLE_HELLO.invoke(
+                new HandleHelloEvent(
+                        packet.name(),
+                        this.shadow$getConnection().getRemoteAddress(),
+                        () -> this.overseer$rejectConnection(this.shadow$getConnection(), ci)));
     }
 }

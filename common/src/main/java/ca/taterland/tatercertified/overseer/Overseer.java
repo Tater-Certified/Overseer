@@ -4,13 +4,18 @@
  */
 package ca.taterland.tatercertified.overseer;
 
-import ca.taterland.tatercertified.overseer.ddos.PlayerListCache;
+import ca.taterland.tatercertified.overseer.api.events.OverseerEvents;
+import ca.taterland.tatercertified.overseer.config.OverseerConfig;
+import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
+import ca.taterland.tatercertified.overseer.ddos.ConnectionHandler;
+import ca.taterland.tatercertified.overseer.ddos.PlayerNameCache;
 
 import dev.neuralnexus.taterapi.MinecraftVersion;
 import dev.neuralnexus.taterapi.Platform;
 import dev.neuralnexus.taterapi.TaterAPIProvider;
 import dev.neuralnexus.taterapi.event.api.ServerEvents;
 import dev.neuralnexus.taterapi.logger.Logger;
+import dev.neuralnexus.taterloader.event.api.PluginEvents;
 
 /** Main class for the plugin. */
 public class Overseer {
@@ -24,7 +29,7 @@ public class Overseer {
     private static final Overseer instance = new Overseer();
     private static final Logger logger = Logger.create(PROJECT_ID);
 
-    public static final PlayerListCache cache = new PlayerListCache();
+    public static final PlayerNameCache cache = new PlayerNameCache();
     public static int rateLimit = 0;
 
     public static Logger logger() {
@@ -48,38 +53,52 @@ public class Overseer {
                         + " "
                         + MinecraftVersion.get()
                         + "!");
+        PluginEvents.DISABLED.register(event -> onDisable());
 
         // Config
-        //        OverseerConfigLoader.load();
+        OverseerConfigLoader.load();
+        OverseerConfig config = OverseerConfigLoader.config();
 
         // Register API
         //        OverseerAPIProvider.register(new OverseerAPI());
 
-        Overseer.cache.addNameSource(
-                () -> TaterAPIProvider.api().get().server().whitelist().keySet());
-        Overseer.cache.addNameSource(
-                () -> TaterAPIProvider.api().get().server().playercache().keySet());
+        if (config.checkModule("ddos")) {
+            OverseerEvents.HANDLE_HELLO.register(ConnectionHandler::handleHello);
 
-        TaterAPIProvider.scheduler()
-                .repeatAsync(
-                        () -> {
-                            if (Overseer.rateLimit > 0) {
-                                Overseer.rateLimit = 0;
-                            }
-                        },
-                        0L,
-                        20L);
-        ServerEvents.STARTED.register(
-                event ->
-                        TaterAPIProvider.scheduler()
-                                .repeatAsync(Overseer.cache::refresh, 0L, 20 * 30L));
+            if (config.ddos().useUsercache()) {
+                Overseer.cache.addNameSource(
+                        () -> TaterAPIProvider.api().get().server().playercache().keySet());
+            }
+            if (config.ddos().useWhitelist()) {
+                Overseer.cache.addNameSource(
+                        () -> TaterAPIProvider.api().get().server().whitelist().keySet());
+            }
+            if (!config.ddos().safeNames().isEmpty()) {
+                Overseer.cache.addNameSource(
+                        () -> OverseerConfigLoader.config().ddos().safeNames());
+            }
+
+            TaterAPIProvider.scheduler()
+                    .repeatAsync(
+                            () -> {
+                                if (Overseer.rateLimit > config.ddos().rateLimit()) {
+                                    Overseer.rateLimit = 0;
+                                }
+                            },
+                            0L,
+                            config.ddos().rateLimitPeriod() * 20L);
+            ServerEvents.STARTED.register(
+                    event ->
+                            TaterAPIProvider.scheduler()
+                                    .repeatAsync(Overseer.cache::refresh, 0L, 20 * 30L));
+        }
 
         logger().info(PROJECT_NAME + " has been started!");
     }
 
     public void onDisable() {
         // Remove references to objects
-        //        OverseerConfigLoader.unload();
+        OverseerConfigLoader.unload();
 
         // Unregister API
         //        OverseerAPIProvider.unregister();
