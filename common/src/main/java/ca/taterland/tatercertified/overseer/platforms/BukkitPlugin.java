@@ -6,13 +6,15 @@ package ca.taterland.tatercertified.overseer.platforms;
 
 import ca.taterland.tatercertified.overseer.Overseer;
 
+import dev.neuralnexus.taterloader.event.api.PluginEvents;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 /** Bukkit entry point. */
 @SuppressWarnings("unused")
 public class BukkitPlugin extends JavaPlugin {
     public BukkitPlugin() {
-        Overseer.instance().onEnable();
+        PluginEvents.ENABLED.register(event -> Overseer.instance().onEnable());
     }
 
     @Override

@@ -8,6 +8,8 @@ import ca.taterland.tatercertified.overseer.Overseer;
 
 import com.google.inject.Inject;
 
+import dev.neuralnexus.taterloader.event.api.PluginEvents;
+
 import org.spongepowered.api.plugin.Plugin;
 
 /** Sponge entry point. */
@@ -20,6 +22,6 @@ import org.spongepowered.api.plugin.Plugin;
 public class Sponge7Plugin {
     @Inject
     public Sponge7Plugin() {
-        Overseer.instance().onEnable();
+        PluginEvents.ENABLED.register(event -> Overseer.instance().onEnable());
     }
 }

@@ -5,9 +5,10 @@
 package ca.taterland.tatercertified.overseer.platforms;
 
 import ca.taterland.tatercertified.overseer.Overseer;
-import ca.taterland.tatercertified.overseer.util.ReflectionUtil;
 
 import dev.neuralnexus.taterapi.MinecraftVersion;
+import dev.neuralnexus.taterapi.util.ReflectionUtil;
+import dev.neuralnexus.taterloader.event.api.PluginEvents;
 
 import net.minecraftforge.fml.common.Mod;
 
@@ -21,7 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 @SuppressWarnings("unused")
 public class ForgePlugin {
     public ForgePlugin() {
-        Overseer.instance().onEnable();
+        PluginEvents.ENABLED.register(event -> Overseer.instance().onEnable());
         MinecraftVersion mcv = MinecraftVersion.get();
         String classStr;
         if (mcv.isInRange(MinecraftVersion.V1_14, MinecraftVersion.V1_16_5)) {

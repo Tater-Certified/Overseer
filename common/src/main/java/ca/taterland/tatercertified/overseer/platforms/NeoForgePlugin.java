@@ -6,6 +6,8 @@ package ca.taterland.tatercertified.overseer.platforms;
 
 import ca.taterland.tatercertified.overseer.Overseer;
 
+import dev.neuralnexus.taterloader.event.api.PluginEvents;
+
 import net.neoforged.fml.common.Mod;
 
 /** NeoForge entry point. */
@@ -13,6 +15,6 @@ import net.neoforged.fml.common.Mod;
 @SuppressWarnings("unused")
 public class NeoForgePlugin {
     public NeoForgePlugin() {
-        Overseer.instance().onEnable();
+        PluginEvents.ENABLED.register(event -> Overseer.instance().onEnable());
     }
 }

@@ -16,9 +16,10 @@ import dev.neuralnexus.taterapi.TaterAPIProvider;
 import dev.neuralnexus.taterapi.event.api.ServerEvents;
 import dev.neuralnexus.taterapi.logger.Logger;
 import dev.neuralnexus.taterloader.event.api.PluginEvents;
+import dev.neuralnexus.taterloader.plugin.Plugin;
 
 /** Main class for the plugin. */
-public class Overseer {
+public class Overseer implements Plugin {
     public static final String PROJECT_NAME = "Overseer";
     public static final String PROJECT_ID = "overseer";
     public static final String PROJECT_VERSION = "0.1.0-SNAPSHOT";
@@ -46,6 +47,17 @@ public class Overseer {
         return instance;
     }
 
+    @Override
+    public String name() {
+        return Overseer.PROJECT_NAME;
+    }
+
+    @Override
+    public String id() {
+        return Overseer.PROJECT_ID;
+    }
+
+    @Override
     public void onEnable() {
         logger.info(
                 Overseer.PROJECT_NAME
@@ -99,6 +111,7 @@ public class Overseer {
         logger().info(PROJECT_NAME + " has been started!");
     }
 
+    @Override
     public void onDisable() {
         // Remove references to objects
         OverseerConfigLoader.unload();

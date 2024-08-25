@@ -6,13 +6,15 @@ package ca.taterland.tatercertified.overseer.platforms;
 
 import ca.taterland.tatercertified.overseer.Overseer;
 
+import dev.neuralnexus.taterloader.event.api.PluginEvents;
+
 import net.fabricmc.api.ModInitializer;
 
 /** Fabric entry point. */
 @SuppressWarnings("unused")
 public class FabricPlugin implements ModInitializer {
     public FabricPlugin() {
-        Overseer.instance().onEnable();
+        PluginEvents.ENABLED.register(event -> Overseer.instance().onEnable());
     }
 
     @Override

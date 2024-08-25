@@ -10,6 +10,8 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 
+import dev.neuralnexus.taterloader.event.api.PluginEvents;
+
 /** Velocity entry point. */
 @Plugin(
         id = Overseer.PROJECT_ID,
@@ -23,6 +25,6 @@ import com.velocitypowered.api.plugin.Plugin;
 public class VelocityPlugin {
     @Inject
     public VelocityPlugin() {
-        Overseer.instance().onEnable();
+        PluginEvents.ENABLED.register(event -> Overseer.instance().onEnable());
     }
 }

@@ -8,13 +8,12 @@ import ca.taterland.tatercertified.overseer.Overseer;
 import ca.taterland.tatercertified.overseer.config.sections.DDOSConfig;
 import ca.taterland.tatercertified.overseer.config.versions.OverseerConfig_V1;
 
-import dev.neuralnexus.taterapi.TaterAPIProvider;
 import dev.neuralnexus.taterapi.config.MixinConfig;
 import dev.neuralnexus.taterapi.config.ToggleableSetting;
 import dev.neuralnexus.taterapi.logger.Logger;
+import dev.neuralnexus.taterapi.metadata.PlatformData;
 import dev.neuralnexus.taterapi.util.ConfigUtil;
 import dev.neuralnexus.taterlib.TaterLib;
-import dev.neuralnexus.taterloader.Loader;
 
 import io.leangen.geantyref.TypeToken;
 
@@ -30,11 +29,10 @@ import java.util.List;
 
 /** A class for loading Switchboard configuration. */
 public class OverseerConfigLoader {
-    private static final Logger logger =
-            Loader.instance().logger(Overseer.PROJECT_ID + "-configloader");
+    private static final Logger logger = Logger.create(Overseer.PROJECT_ID + "-configloader");
     private static final Path configPath =
             Paths.get(
-                    TaterAPIProvider.platformData().configFolder()
+                    PlatformData.instance().configFolder()
                             + File.separator
                             + Overseer.PROJECT_ID
                             + File.separator
