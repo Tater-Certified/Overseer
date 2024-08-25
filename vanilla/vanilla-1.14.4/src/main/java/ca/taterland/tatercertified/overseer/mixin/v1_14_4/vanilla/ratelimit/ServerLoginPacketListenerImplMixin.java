@@ -6,6 +6,8 @@ package ca.taterland.tatercertified.overseer.mixin.v1_14_4.vanilla.ratelimit;
 
 import ca.taterland.tatercertified.overseer.api.events.HandleHelloEvent;
 import ca.taterland.tatercertified.overseer.api.events.OverseerEvents;
+import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
+import ca.taterland.tatercertified.overseer.config.sections.DDOSConfig;
 
 import dev.neuralnexus.conditionalmixins.annotations.ReqMCVersion;
 import dev.neuralnexus.conditionalmixins.annotations.ReqMappings;
@@ -14,6 +16,7 @@ import dev.neuralnexus.taterapi.MinecraftVersion;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.login.ClientboundLoginDisconnectPacket;
 import net.minecraft.network.protocol.login.ServerboundHelloPacket;
@@ -25,6 +28,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ReqMappings(Mappings.MOJMAP)
 @ReqMCVersion(min = MinecraftVersion.V1_14, max = MinecraftVersion.V1_18_2)
@@ -45,12 +51,47 @@ public abstract class ServerLoginPacketListenerImplMixin {
         ci.cancel();
     }
 
+    @Unique private final List<Component> overseer$trashTalk = new ArrayList<>();
+
+    @Unique private final List<ClientboundLoginDisconnectPacket> overseer$trashTalkPackets =
+            new ArrayList<>();
+
+    @Unique private int overseer$index = 0;
+
+    @Unique private void overseer$trashTalkReject(Connection conn, CallbackInfo ci) {
+        this.overseer$index++;
+        if (this.overseer$index > this.overseer$trashTalk.size()) {
+            this.overseer$index = 0;
+        }
+        conn.send(this.overseer$trashTalkPackets.get(this.overseer$index));
+        conn.disconnect(this.overseer$trashTalk.get(this.overseer$index));
+        ci.cancel();
+    }
+
     @Inject(method = "handleHello", at = @At("HEAD"), cancellable = true)
-    public void onHandleIntention(ServerboundHelloPacket packet, CallbackInfo ci) {
-        OverseerEvents.HANDLE_HELLO.invoke(
-                new HandleHelloEvent(
-                        packet.getGameProfile().getName(),
-                        this.shadow$getConnection().getRemoteAddress(),
-                        () -> this.overseer$rejectConnection(this.shadow$getConnection(), ci)));
+    public void onHandleHello(ServerboundHelloPacket packet, CallbackInfo ci) {
+        DDOSConfig ddos = OverseerConfigLoader.config().ddos();
+        if (this.overseer$trashTalk.isEmpty()) {
+            for (String trash : ddos.trashTalk()) {
+                Component component = new TextComponent(trash);
+                this.overseer$trashTalk.add(component);
+                this.overseer$trashTalkPackets.add(new ClientboundLoginDisconnectPacket(component));
+            }
+        }
+        HandleHelloEvent event;
+        if (ddos.trashTalkEnabled()) {
+            event =
+                    new HandleHelloEvent(
+                            packet.getGameProfile().getName(),
+                            this.shadow$getConnection().getRemoteAddress(),
+                            () -> this.overseer$trashTalkReject(this.shadow$getConnection(), ci));
+        } else {
+            event =
+                    new HandleHelloEvent(
+                            packet.getGameProfile().getName(),
+                            this.shadow$getConnection().getRemoteAddress(),
+                            () -> this.overseer$rejectConnection(this.shadow$getConnection(), ci));
+        }
+        OverseerEvents.HANDLE_HELLO.invoke(event);
     }
 }
