@@ -6,6 +6,7 @@ package ca.taterland.tatercertified.overseer.config.versions;
 
 import ca.taterland.tatercertified.overseer.config.OverseerConfig;
 import ca.taterland.tatercertified.overseer.config.sections.DDOSConfig;
+import ca.taterland.tatercertified.overseer.config.sections.IPLoggerConfig;
 
 import dev.neuralnexus.taterapi.config.MixinConfig;
 import dev.neuralnexus.taterapi.config.ToggleableSetting;
@@ -18,13 +19,19 @@ public class OverseerConfig_V1 implements OverseerConfig {
     private final List<ToggleableSetting> modules;
     private final MixinConfig mixin;
     private final DDOSConfig ddos;
+    private final IPLoggerConfig ipLogger;
 
     public OverseerConfig_V1(
-            int version, List<ToggleableSetting> modules, MixinConfig mixin, DDOSConfig ddos) {
+            int version,
+            List<ToggleableSetting> modules,
+            MixinConfig mixin,
+            DDOSConfig ddos,
+            IPLoggerConfig ipLogger) {
         this.version = version;
         this.modules = modules;
         this.mixin = mixin;
         this.ddos = ddos;
+        this.ipLogger = ipLogger;
     }
 
     @Override
@@ -45,5 +52,10 @@ public class OverseerConfig_V1 implements OverseerConfig {
     @Override
     public DDOSConfig ddos() {
         return this.ddos;
+    }
+
+    @Override
+    public IPLoggerConfig ipLogger() {
+        return this.ipLogger;
     }
 }

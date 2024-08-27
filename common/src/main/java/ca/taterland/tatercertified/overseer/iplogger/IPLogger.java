@@ -7,7 +7,5 @@ package ca.taterland.tatercertified.overseer.iplogger;
 import ca.taterland.tatercertified.overseer.api.events.LogIPEvent;
 
 public class IPLogger {
-    public static void logIp(LogIPEvent event) {
-
-    }
+    public static void logIp(LogIPEvent event) {}
 }

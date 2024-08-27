@@ -4,8 +4,12 @@
  */
 package ca.taterland.tatercertified.overseer.config;
 
+import static dev.neuralnexus.taterapi.util.ConfigUtil.get;
+import static dev.neuralnexus.taterapi.util.ConfigUtil.set;
+
 import ca.taterland.tatercertified.overseer.Overseer;
 import ca.taterland.tatercertified.overseer.config.sections.DDOSConfig;
+import ca.taterland.tatercertified.overseer.config.sections.IPLoggerConfig;
 import ca.taterland.tatercertified.overseer.config.versions.OverseerConfig_V1;
 
 import dev.neuralnexus.taterapi.config.MixinConfig;
@@ -13,13 +17,11 @@ import dev.neuralnexus.taterapi.config.ToggleableSetting;
 import dev.neuralnexus.taterapi.logger.Logger;
 import dev.neuralnexus.taterapi.metadata.PlatformData;
 import dev.neuralnexus.taterapi.util.ConfigUtil;
-import dev.neuralnexus.taterlib.TaterLib;
 
 import io.leangen.geantyref.TypeToken;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
 import java.io.File;
@@ -44,6 +46,8 @@ public class OverseerConfigLoader {
             new TypeToken<List<ToggleableSetting>>() {};
     private static final TypeToken<MixinConfig> mixinType = new TypeToken<MixinConfig>() {};
     private static final TypeToken<DDOSConfig> ddosType = new TypeToken<DDOSConfig>() {};
+    private static final TypeToken<IPLoggerConfig> ipLoggerType =
+            new TypeToken<IPLoggerConfig>() {};
     private static OverseerConfig config;
 
     /** Load the configuration from the file. */
@@ -57,16 +61,15 @@ public class OverseerConfigLoader {
             return;
         }
 
-        ConfigurationNode versionNode = root.node("version");
-        int version = versionNode.getInt(1);
-
-        List<ToggleableSetting> modules = ConfigUtil.get(root, moduleType, "modules", logger);
-        MixinConfig mixin = ConfigUtil.get(root, mixinType, "mixin", logger);
-        DDOSConfig ddos = ConfigUtil.get(root, ddosType, "ddos", logger);
+        int version = root.node("version").getInt(1);
+        List<ToggleableSetting> modules = get(root, moduleType, "modules", logger);
+        MixinConfig mixin = get(root, mixinType, "mixin", logger);
+        DDOSConfig ddos = get(root, ddosType, "ddos", logger);
+        IPLoggerConfig ipLogger = get(root, ipLoggerType, "iplogger", logger);
 
         switch (version) {
             case 1:
-                config = new OverseerConfig_V1(version, modules, mixin, ddos);
+                config = new OverseerConfig_V1(version, modules, mixin, ddos, ipLogger);
                 break;
             default:
                 logger.error("Unknown configuration version: " + version);
@@ -90,18 +93,16 @@ public class OverseerConfigLoader {
             return;
         }
 
-        ConfigUtil.set(root, versionType, "version", config.version(), logger);
-        ConfigUtil.set(root, moduleType, "modules", config.modules(), logger);
-        ConfigUtil.set(root, mixinType, "mixin", config.mixin(), logger);
+        set(root, versionType, "version", config.version(), logger);
+        set(root, moduleType, "modules", config.modules(), logger);
+        set(root, mixinType, "mixin", config.mixin(), logger);
+        set(root, ddosType, "ddos", config.ddos(), logger);
+        set(root, ipLoggerType, "iplogger", config.ipLogger(), logger);
 
         try {
             loader.save(root);
         } catch (ConfigurateException e) {
-            TaterLib.logger()
-                    .error("An error occurred while saving this configuration: " + e.getMessage());
-            if (e.getCause() != null) {
-                e.getCause().printStackTrace();
-            }
+            logger.error("An error occurred while saving this configuration: ", e);
         }
     }
 

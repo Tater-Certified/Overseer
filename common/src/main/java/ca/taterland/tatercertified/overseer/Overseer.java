@@ -8,9 +8,9 @@ import ca.taterland.tatercertified.overseer.api.OverseerAPI;
 import ca.taterland.tatercertified.overseer.api.events.OverseerEvents;
 import ca.taterland.tatercertified.overseer.config.OverseerConfig;
 import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
-import ca.taterland.tatercertified.overseer.ddos.ConnectionHandler;
-
+import ca.taterland.tatercertified.overseer.ddos.DDOS;
 import ca.taterland.tatercertified.overseer.iplogger.IPLogger;
+
 import dev.neuralnexus.taterapi.MinecraftVersion;
 import dev.neuralnexus.taterapi.Platform;
 import dev.neuralnexus.taterapi.TaterAPIProvider;
@@ -70,31 +70,36 @@ public class Overseer implements Plugin {
         OverseerConfig config = OverseerConfigLoader.config();
 
         // Register API
-        //        OverseerAPIProvider.register(new OverseerAPI());
+        OverseerAPI.register(new OverseerAPI());
 
         if (config.checkModule("ddos")) {
-            OverseerEvents.HANDLE_HELLO.register(ConnectionHandler::handleHello);
+            OverseerEvents.HANDLE_HELLO.register(DDOS::handleHello);
 
-            OverseerAPI.rateLimit = config.ddos().rateLimit();
+            DDOS.rateLimit = config.ddos().rateLimit();
 
             if (config.ddos().useUsercache()) {
-                OverseerAPI.get().cache().addNameSource(
-                        () -> TaterAPIProvider.api().get().server().playercache().keySet());
+                OverseerAPI.get()
+                        .ddos()
+                        .addNameSource(
+                                () -> TaterAPIProvider.api().get().server().playercache().keySet());
             }
             if (config.ddos().useWhitelist()) {
-                OverseerAPI.get().cache().addNameSource(
-                        () -> TaterAPIProvider.api().get().server().whitelist().keySet());
+                OverseerAPI.get()
+                        .ddos()
+                        .addNameSource(
+                                () -> TaterAPIProvider.api().get().server().whitelist().keySet());
             }
             if (!config.ddos().safeNames().isEmpty()) {
-                OverseerAPI.get().cache().addNameSource(
-                        () -> OverseerConfigLoader.config().ddos().safeNames());
+                OverseerAPI.get()
+                        .ddos()
+                        .addNameSource(() -> OverseerConfigLoader.config().ddos().safeNames());
             }
 
             TaterAPIProvider.scheduler()
                     .repeatAsync(
                             () -> {
-                                if (OverseerAPI.rate > config.ddos().rateLimit()) {
-                                    OverseerAPI.rate = 0;
+                                if (DDOS.rate > config.ddos().rateLimit()) {
+                                    DDOS.rate = 0;
                                 }
                             },
                             0L,
@@ -102,12 +107,15 @@ public class Overseer implements Plugin {
             ServerEvents.STARTED.register(
                     event ->
                             TaterAPIProvider.scheduler()
-                                    .repeatAsync(OverseerAPI.get().cache()::refresh, 0L, 20 * 30L));
+                                    .repeatAsync(
+                                            OverseerAPI.get().ddos()::refresh, 0L, 20 * 30L));
+        }
 
-            if (config.ddos().logIps()) {
-                OverseerAPI.logIps = true;
-                OverseerEvents.LOG_IP.register(IPLogger::logIp);
+        if (config.checkModule("iplogger")) {
+            if (config.ipLogger().ddos()) {
+                DDOS.logIps = true;
             }
+            OverseerEvents.LOG_IP.register(IPLogger::logIp);
         }
 
         logger().info(PROJECT_NAME + " has been started!");
@@ -119,7 +127,7 @@ public class Overseer implements Plugin {
         OverseerConfigLoader.unload();
 
         // Unregister API
-        //        OverseerAPIProvider.unregister();
+        OverseerAPI.unregister();
 
         logger().info(PROJECT_NAME + " has been stopped!");
     }

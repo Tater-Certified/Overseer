@@ -4,27 +4,60 @@
  */
 package ca.taterland.tatercertified.overseer.ddos;
 
-import ca.taterland.tatercertified.overseer.Overseer;
-import ca.taterland.tatercertified.overseer.api.OverseerAPI;
 import ca.taterland.tatercertified.overseer.api.events.HandleHelloEvent;
 import ca.taterland.tatercertified.overseer.api.events.LogIPEvent;
 import ca.taterland.tatercertified.overseer.api.events.OverseerEvents;
 import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
-
+import com.google.common.collect.Sets;
 import dev.neuralnexus.taterapi.TaterAPIProvider;
 
-public class ConnectionHandler {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
+
+public class DDOS {
+    private static final DDOS instance = new DDOS();
+
+    public static int rateLimit = 1;
+    public static int rate = 1;
+    public static boolean logIps = false;
+
+    public static DDOS get() {
+        return instance;
+    }
+
+    private static final Set<String> usercache = Sets.newConcurrentHashSet();
+    private static final List<Supplier<Collection<String>>> nameSources = new ArrayList<>();
+
+    public void addNameSource(Supplier<Collection<String>> source) {
+        nameSources.add(source);
+    }
+
+    public void refresh() {
+        usercache.clear();
+        for (Supplier<Collection<String>> source : nameSources) {
+            usercache.addAll(source.get());
+        }
+    }
+
+    public static boolean checkName(String name) {
+        return usercache.contains(name);
+    }
+
     public static void handleHello(HandleHelloEvent event) {
         // Check the bad names
         for (String name : OverseerConfigLoader.config().ddos().blacklistedNames()) {
             if (event.name().startsWith(name)) {
-                if (OverseerAPI.logIps) {
+                if (logIps) {
                     TaterAPIProvider.scheduler()
                             .runAsync(
                                     () ->
                                             OverseerEvents.LOG_IP.invoke(
                                                     new LogIPEvent(
-                                                            event.ip(), LogIPEvent.BLACKLISTED_NAME)));
+                                                            event.ip(),
+                                                            LogIPEvent.BLACKLISTED_NAME)));
                 }
                 event.setCancelled(true);
                 return;
@@ -32,20 +65,21 @@ public class ConnectionHandler {
         }
 
         // Check the name cache to see if they should be skipped
-        if (PlayerNameCache.checkName(event.name())) return;
+        if (checkName(event.name())) return;
 
         // Rate limit the rest
-        if (OverseerAPI.rate > OverseerAPI.rateLimit) {
-            if (OverseerAPI.logIps) {
+        if (rate > rateLimit) {
+            if (logIps) {
                 TaterAPIProvider.scheduler()
                         .runAsync(
                                 () ->
                                         OverseerEvents.LOG_IP.invoke(
-                                                new LogIPEvent(event.ip(), LogIPEvent.RATE_LIMITED)));
+                                                new LogIPEvent(
+                                                        event.ip(), LogIPEvent.RATE_LIMITED)));
             }
             event.setCancelled(true);
             return;
         }
-        OverseerAPI.rate++;
+        rate++;
     }
 }

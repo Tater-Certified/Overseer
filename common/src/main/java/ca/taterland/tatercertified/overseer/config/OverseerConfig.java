@@ -5,6 +5,7 @@
 package ca.taterland.tatercertified.overseer.config;
 
 import ca.taterland.tatercertified.overseer.config.sections.DDOSConfig;
+import ca.taterland.tatercertified.overseer.config.sections.IPLoggerConfig;
 
 import dev.neuralnexus.taterapi.config.MixinConfig;
 import dev.neuralnexus.taterapi.config.ToggleableSetting;
@@ -40,6 +41,13 @@ public interface OverseerConfig {
      * @return The DDOS config
      */
     DDOSConfig ddos();
+
+    /**
+     * Get the IP Logger config
+     *
+     * @return The IP Logger config
+     */
+    IPLoggerConfig ipLogger();
 
     /**
      * Check if a module is enabled in the configuration.

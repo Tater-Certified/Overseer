@@ -18,8 +18,6 @@ public class DDOSConfig {
     @Setting private boolean useWhitelist;
     @Setting private List<String> safeNames;
     @Setting private List<String> blacklistedNames;
-    @Setting private boolean logIps;
-    @Setting private String logFolder;
     @Setting private boolean trashTalkEnabled;
     @Setting private List<String> trashTalk;
 
@@ -45,14 +43,6 @@ public class DDOSConfig {
 
     public List<String> blacklistedNames() {
         return this.blacklistedNames;
-    }
-
-    public boolean logIps() {
-        return this.logIps;
-    }
-
-    public String logFolder() {
-        return this.logFolder;
     }
 
     public boolean trashTalkEnabled() {
