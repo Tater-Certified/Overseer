@@ -4,12 +4,13 @@
  */
 package ca.taterland.tatercertified.overseer;
 
+import ca.taterland.tatercertified.overseer.api.OverseerAPI;
 import ca.taterland.tatercertified.overseer.api.events.OverseerEvents;
 import ca.taterland.tatercertified.overseer.config.OverseerConfig;
 import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
 import ca.taterland.tatercertified.overseer.ddos.ConnectionHandler;
-import ca.taterland.tatercertified.overseer.ddos.PlayerNameCache;
 
+import ca.taterland.tatercertified.overseer.iplogger.IPLogger;
 import dev.neuralnexus.taterapi.MinecraftVersion;
 import dev.neuralnexus.taterapi.Platform;
 import dev.neuralnexus.taterapi.TaterAPIProvider;
@@ -29,10 +30,6 @@ public class Overseer implements Plugin {
 
     private static final Overseer instance = new Overseer();
     private static final Logger logger = Logger.create(PROJECT_ID);
-
-    public static final PlayerNameCache cache = new PlayerNameCache();
-    public static int rateLimit;
-    public static int rate = 0;
 
     public static Logger logger() {
         return logger;
@@ -78,26 +75,26 @@ public class Overseer implements Plugin {
         if (config.checkModule("ddos")) {
             OverseerEvents.HANDLE_HELLO.register(ConnectionHandler::handleHello);
 
-            rateLimit = config.ddos().rateLimit();
+            OverseerAPI.rateLimit = config.ddos().rateLimit();
 
             if (config.ddos().useUsercache()) {
-                Overseer.cache.addNameSource(
+                OverseerAPI.get().cache().addNameSource(
                         () -> TaterAPIProvider.api().get().server().playercache().keySet());
             }
             if (config.ddos().useWhitelist()) {
-                Overseer.cache.addNameSource(
+                OverseerAPI.get().cache().addNameSource(
                         () -> TaterAPIProvider.api().get().server().whitelist().keySet());
             }
             if (!config.ddos().safeNames().isEmpty()) {
-                Overseer.cache.addNameSource(
+                OverseerAPI.get().cache().addNameSource(
                         () -> OverseerConfigLoader.config().ddos().safeNames());
             }
 
             TaterAPIProvider.scheduler()
                     .repeatAsync(
                             () -> {
-                                if (Overseer.rate > config.ddos().rateLimit()) {
-                                    Overseer.rate = 0;
+                                if (OverseerAPI.rate > config.ddos().rateLimit()) {
+                                    OverseerAPI.rate = 0;
                                 }
                             },
                             0L,
@@ -105,7 +102,12 @@ public class Overseer implements Plugin {
             ServerEvents.STARTED.register(
                     event ->
                             TaterAPIProvider.scheduler()
-                                    .repeatAsync(Overseer.cache::refresh, 0L, 20 * 30L));
+                                    .repeatAsync(OverseerAPI.get().cache()::refresh, 0L, 20 * 30L));
+
+            if (config.ddos().logIps()) {
+                OverseerAPI.logIps = true;
+                OverseerEvents.LOG_IP.register(IPLogger::logIp);
+            }
         }
 
         logger().info(PROJECT_NAME + " has been started!");

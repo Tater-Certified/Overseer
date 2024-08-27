@@ -17,7 +17,7 @@ public class DDOSConfig {
     @Setting private boolean useUsercache;
     @Setting private boolean useWhitelist;
     @Setting private List<String> safeNames;
-    @Setting private List<String> badNames;
+    @Setting private List<String> blacklistedNames;
     @Setting private boolean logIps;
     @Setting private String logFolder;
     @Setting private boolean trashTalkEnabled;
@@ -43,8 +43,8 @@ public class DDOSConfig {
         return this.safeNames;
     }
 
-    public List<String> badNames() {
-        return this.badNames;
+    public List<String> blacklistedNames() {
+        return this.blacklistedNames;
     }
 
     public boolean logIps() {

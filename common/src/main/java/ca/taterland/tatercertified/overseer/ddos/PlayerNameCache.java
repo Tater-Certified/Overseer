@@ -16,8 +16,6 @@ public class PlayerNameCache {
     private static final Set<String> usercache = Sets.newConcurrentHashSet();
     private static final List<Supplier<Collection<String>>> nameSources = new ArrayList<>();
 
-    public PlayerNameCache() {}
-
     public void addNameSource(Supplier<Collection<String>> source) {
         nameSources.add(source);
     }

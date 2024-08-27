@@ -8,4 +8,5 @@ import dev.neuralnexus.taterapi.event.api.EventManager;
 
 public interface OverseerEvents {
     EventManager<HandleHelloEvent> HANDLE_HELLO = new EventManager<>(HandleHelloEvent.class);
+    EventManager<LogIPEvent> LOG_IP = new EventManager<>(LogIPEvent.class);
 }
