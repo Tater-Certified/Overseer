@@ -8,7 +8,9 @@ import ca.taterland.tatercertified.overseer.api.events.HandleHelloEvent;
 import ca.taterland.tatercertified.overseer.api.events.LogIPEvent;
 import ca.taterland.tatercertified.overseer.api.events.OverseerEvents;
 import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
+
 import com.google.common.collect.Sets;
+
 import dev.neuralnexus.taterapi.TaterAPIProvider;
 
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class DDOS {
                                             OverseerEvents.LOG_IP.invoke(
                                                     new LogIPEvent(
                                                             event.ip(),
-                                                            LogIPEvent.BLACKLISTED_NAME)));
+                                                            LogIPEvent.Reason.BLACKLISTED_NAME)));
                 }
                 event.setCancelled(true);
                 return;
@@ -75,7 +77,8 @@ public class DDOS {
                                 () ->
                                         OverseerEvents.LOG_IP.invoke(
                                                 new LogIPEvent(
-                                                        event.ip(), LogIPEvent.RATE_LIMITED)));
+                                                        event.ip(),
+                                                        LogIPEvent.Reason.RATE_LIMITED)));
             }
             event.setCancelled(true);
             return;

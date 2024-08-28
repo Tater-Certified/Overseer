@@ -9,13 +9,11 @@ import dev.neuralnexus.taterapi.event.Event;
 import java.net.SocketAddress;
 
 public class LogIPEvent implements Event {
-    public static final String BLACKLISTED_NAME = "Blacklisted username";
-    public static final String RATE_LIMITED = "Rate limited";
-
     private final SocketAddress ip;
-    private final String reason;
+    private final Reason reason;
+    private final long timestamp = System.currentTimeMillis();
 
-    public LogIPEvent(SocketAddress ip, String reason) {
+    public LogIPEvent(SocketAddress ip, Reason reason) {
         this.ip = ip;
         this.reason = reason;
     }
@@ -24,7 +22,27 @@ public class LogIPEvent implements Event {
         return this.ip;
     }
 
-    public String reason() {
+    public Reason reason() {
         return this.reason;
+    }
+
+    public long timestamp() {
+        return this.timestamp;
+    }
+
+    public enum Reason {
+        BLACKLISTED_NAME("Blacklisted username"),
+        RATE_LIMITED("Rate limited");
+
+        public final String reason;
+
+        Reason(String reason) {
+            this.reason = reason;
+        }
+
+        @Override
+        public String toString() {
+            return this.reason;
+        }
     }
 }

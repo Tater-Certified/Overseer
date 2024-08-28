@@ -19,6 +19,10 @@ import dev.neuralnexus.taterapi.logger.Logger;
 import dev.neuralnexus.taterloader.event.api.PluginEvents;
 import dev.neuralnexus.taterloader.plugin.Plugin;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /** Main class for the plugin. */
 public class Overseer implements Plugin {
     public static final String PROJECT_NAME = "Overseer";
@@ -107,28 +111,42 @@ public class Overseer implements Plugin {
             ServerEvents.STARTED.register(
                     event ->
                             TaterAPIProvider.scheduler()
-                                    .repeatAsync(
-                                            OverseerAPI.get().ddos()::refresh, 0L, 20 * 30L));
+                                    .repeatAsync(OverseerAPI.get().ddos()::refresh, 0L, 20 * 30L));
         }
 
         if (config.checkModule("iplogger")) {
             if (config.ipLogger().ddos()) {
                 DDOS.logIps = true;
             }
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+            IPLogger.logFile = new File(config.ipLogger().folder() + File.separator + "ips-" + timestamp + ".csv");
+            if (!IPLogger.logFile.exists()) {
+                try {
+                    IPLogger.logFile.createNewFile();
+                } catch (Exception e) {
+                    logger.error("Failed to create the IP log file!", e);
+                }
+            }
+            TaterAPIProvider.scheduler().repeatAsync(IPLogger::flush, 0L, 20 * 180L);
             OverseerEvents.LOG_IP.register(IPLogger::logIp);
         }
 
-        logger().info(PROJECT_NAME + " has been started!");
+        logger.info(PROJECT_NAME + " has been started!");
     }
 
     @Override
     public void onDisable() {
+        // Flush any pending IP logs
+        if (OverseerConfigLoader.config().checkModule("iplogger")) {
+            IPLogger.flush();
+        }
+
         // Remove references to objects
         OverseerConfigLoader.unload();
 
         // Unregister API
         OverseerAPI.unregister();
 
-        logger().info(PROJECT_NAME + " has been stopped!");
+        logger.info(PROJECT_NAME + " has been stopped!");
     }
 }
