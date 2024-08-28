@@ -25,14 +25,9 @@ Link to our support: [Discord](https://discord.gg/XGw3Te7QYr)
 ## Dependencies
 
 - [TaterLib](https://github.com/p0t4t0sandwich/TaterLib) - Required on all platforms
+- [ProtocolLib](https://github.com/dmulloy2/ProtocolLib) - Required on Bukkit
 
 ### Compatibility
 
 - Platforms: Bukkit, BungeeCord, Fabric, Forge, Sponge, and Velocity
 - Versions: Any version that TaterLib supports
-
-## Commands and Permissions
-
-| Command                | Permission | Description               |
-|------------------------|------------|---------------------------|
-| `/ddos <true\| false>` | `operator` | Toggles super attack mode |

@@ -23,7 +23,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/** Main class for the plugin. */
 public class Overseer implements Plugin {
     public static final String PROJECT_NAME = "Overseer";
     public static final String PROJECT_ID = "overseer";
@@ -35,17 +34,12 @@ public class Overseer implements Plugin {
     private static final Overseer instance = new Overseer();
     private static final Logger logger = Logger.create(PROJECT_ID);
 
-    public static Logger logger() {
-        return logger;
-    }
-
-    /**
-     * Getter for the singleton instance of the class.
-     *
-     * @return The singleton instance
-     */
     public static Overseer instance() {
         return instance;
+    }
+
+    public static Logger logger() {
+        return logger;
     }
 
     @Override
@@ -76,6 +70,7 @@ public class Overseer implements Plugin {
         // Register API
         OverseerAPI.register(new OverseerAPI());
 
+        // Setup for DDOS protection
         if (config.checkModule("ddos")) {
             OverseerEvents.HANDLE_HELLO.register(DDOS::handleHello);
 
@@ -114,12 +109,21 @@ public class Overseer implements Plugin {
                                     .repeatAsync(OverseerAPI.get().ddos()::refresh, 0L, 20 * 30L));
         }
 
+        // Setup for IP logging
         if (config.checkModule("iplogger")) {
             if (config.ipLogger().ddos()) {
                 DDOS.logIps = true;
             }
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-            IPLogger.logFile = new File(config.ipLogger().folder() + File.separator + "ips-" + timestamp + ".csv");
+            String timestamp =
+                    new SimpleDateFormat("yyyyMMdd_HHmmss")
+                            .format(Calendar.getInstance().getTime());
+            IPLogger.logFile =
+                    new File(
+                            config.ipLogger().folder()
+                                    + File.separator
+                                    + "ips-"
+                                    + timestamp
+                                    + ".csv");
             if (!IPLogger.logFile.exists()) {
                 try {
                     IPLogger.logFile.createNewFile();

@@ -18,15 +18,15 @@ public class OverseerAPI {
     }
 
     public static OverseerAPI get() {
+        if (instance == null) {
+            throw new IllegalStateException(
+                    "The Overseer API has not been registered yet, you're most likely trying to access it too early in loading.");
+        }
         return instance;
     }
 
     @ApiStatus.Internal
     public static void register(OverseerAPI api) {
-        if (instance == null) {
-            throw new IllegalStateException(
-                    "The Overseer API has not been registered yet, you're most likely trying to access it too early in loading.");
-        }
         instance = api;
     }
 

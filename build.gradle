@@ -2,6 +2,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 plugins {
+    alias(libs.plugins.paperweight) apply(false)
     alias(libs.plugins.spotless) apply(false)
 }
 
@@ -190,7 +191,7 @@ ext.bundleJars = { Map<String, List<String>> platformVersions ->
 }
 
 var platformVersions = [:]
-platformVersions.put("bukkit", Arrays.asList())
+platformVersions.put("bukkit", Arrays.asList("1.20.6"))
 platformVersions.put("bungee", Arrays.asList())
 platformVersions.put("fabric", Arrays.asList("1.14.4", "1.19", "1.19.4"))
 platformVersions.put("forge", Arrays.asList("1.14.4", "1.17.1", "1.19", "1.19.4"))

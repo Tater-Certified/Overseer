@@ -1,0 +1,23 @@
+import java.nio.file.Files
+
+plugins {
+    alias(libs.plugins.paperweight)
+}
+
+base {
+    archivesName = "${project_id}-bukkit-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+sourceCompatibility = targetCompatibility = java_version
+
+repositories {
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+}
+
+dependencies {
+    paperweight.paperDevBundle("${minecraft_version}-${bukkit_version}")
+    compileOnly('com.comphenix.protocol:ProtocolLib:5.1.0')
+    compileOnly("dev.neuralnexus:taterapi:${taterlib_version}")
+    compileOnly(project(':common'))
+}

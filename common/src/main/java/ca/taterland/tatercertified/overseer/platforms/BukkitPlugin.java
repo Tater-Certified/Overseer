@@ -6,6 +6,7 @@ package ca.taterland.tatercertified.overseer.platforms;
 
 import ca.taterland.tatercertified.overseer.Overseer;
 
+import dev.neuralnexus.taterapi.util.ReflectionUtil;
 import dev.neuralnexus.taterloader.event.api.PluginEvents;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,7 +19,10 @@ public class BukkitPlugin extends JavaPlugin {
     }
 
     @Override
-    public void onEnable() {}
+    public void onEnable() {
+        ReflectionUtil.newInstance(
+                "ca.taterland.tatercertified.overseer.v1_21_1.bukkit.OverseerBukkit");
+    }
 
     @Override
     public void onDisable() {}
