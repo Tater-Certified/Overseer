@@ -29,6 +29,12 @@ subprojects {
             url = "https://maven.neuralnexus.dev/releases"
         }
 
+        // NeuralNexus Snapshots
+        maven {
+            name = 'NeuralNexus Snapshots'
+            url = 'https://maven.neuralnexus.dev/snapshots'
+        }
+
         // NeuralNexus Mirror
         maven {
             name = 'NeuralNexus Mirror'

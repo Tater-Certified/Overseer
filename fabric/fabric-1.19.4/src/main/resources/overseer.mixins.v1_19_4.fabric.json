@@ -7,6 +7,9 @@
   "required": false,
   "package": "ca.taterland.tatercertified.overseer.mixin",
   "mixins": [
+    "v1_19_4.fabric.falling_block.FallingBlockEntityMixin",
+    "v1_19_4.fabric.piston_duplication.PistonBaseBlockMixin",
+    "v1_19_4.fabric.piston_duplication.PistonMovingBlockEntityMixin",
     "v1_19_4.fabric.ratelimit.ServerLoginPacketListenerImplMixin"
   ]
 }
