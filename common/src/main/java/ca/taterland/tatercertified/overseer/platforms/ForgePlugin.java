@@ -6,7 +6,7 @@ package ca.taterland.tatercertified.overseer.platforms;
 
 import ca.taterland.tatercertified.overseer.Overseer;
 
-import dev.neuralnexus.taterapi.MinecraftVersion;
+import dev.neuralnexus.taterapi.meta.enums.MinecraftVersion;
 import dev.neuralnexus.taterapi.util.ReflectionUtil;
 import dev.neuralnexus.taterloader.event.api.PluginEvents;
 
@@ -25,11 +25,11 @@ public class ForgePlugin {
         PluginEvents.ENABLED.register(event -> Overseer.instance().onEnable());
         MinecraftVersion mcv = MinecraftVersion.get();
         String classStr;
-        if (mcv.isInRange(MinecraftVersion.V1_14, MinecraftVersion.V1_16_5)) {
+        if (mcv.isInRange(MinecraftVersion.V14, MinecraftVersion.V16_5)) {
             classStr = "ca.taterland.tatercertified.overseer.v1_14_4.forge.OverseerForge";
-        } else if (mcv.isInRange(MinecraftVersion.V1_17, MinecraftVersion.V1_17_1)) {
+        } else if (mcv.isInRange(MinecraftVersion.V17, MinecraftVersion.V17_1)) {
             classStr = "ca.taterland.tatercertified.overseer.v1_17_1.forge.OverseerForge";
-        } else if (mcv.isInRange(MinecraftVersion.V1_18, MinecraftVersion.V1_19_3)) {
+        } else if (mcv.isInRange(MinecraftVersion.V18, MinecraftVersion.V19_3)) {
             classStr = "ca.taterland.tatercertified.overseer.v1_19.forge.OverseerForge";
         } else {
             classStr = "ca.taterland.tatercertified.overseer.v1_19_4.forge.OverseerForge";

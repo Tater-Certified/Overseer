@@ -9,10 +9,10 @@ import ca.taterland.tatercertified.overseer.api.events.OverseerEvents;
 import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
 import ca.taterland.tatercertified.overseer.config.sections.DDOSConfig;
 
-import dev.neuralnexus.conditionalmixins.annotations.ReqMCVersion;
-import dev.neuralnexus.conditionalmixins.annotations.ReqMappings;
-import dev.neuralnexus.taterapi.Mappings;
-import dev.neuralnexus.taterapi.MinecraftVersion;
+import dev.neuralnexus.taterapi.meta.Mappings;
+import dev.neuralnexus.taterapi.meta.enums.MinecraftVersion;
+import dev.neuralnexus.taterapi.muxins.annotations.ReqMCVersion;
+import dev.neuralnexus.taterapi.muxins.annotations.ReqMappings;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ReqMappings(Mappings.MOJMAP)
-@ReqMCVersion(min = MinecraftVersion.V1_14, max = MinecraftVersion.V1_18_2)
+@ReqMCVersion(min = MinecraftVersion.V14, max = MinecraftVersion.V18_2)
 @Mixin(ServerLoginPacketListenerImpl.class)
 public abstract class ServerLoginPacketListenerImplMixin {
     @Shadow

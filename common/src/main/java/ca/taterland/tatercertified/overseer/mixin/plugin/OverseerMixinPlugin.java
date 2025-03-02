@@ -6,7 +6,7 @@ package ca.taterland.tatercertified.overseer.mixin.plugin;
 
 import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
 
-import dev.neuralnexus.conditionalmixins.ConditionalMixins;
+import dev.neuralnexus.taterapi.muxins.Muxins;
 import dev.neuralnexus.taterapi.config.MixinConfig;
 
 import org.objectweb.asm.tree.ClassNode;
@@ -30,7 +30,7 @@ public class OverseerMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         MixinConfig config = OverseerConfigLoader.config().mixin();
-        return ConditionalMixins.shouldApplyMixin(
+        return Muxins.shouldApplyMixin(
                 mixinClassName, config.disabled(), config.verbose());
     }
 

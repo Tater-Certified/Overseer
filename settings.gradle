@@ -63,7 +63,7 @@ rootProject.name = 'Overseer'
 include(
         'common',
 
-        'bukkit:bukkit-1.21.1',
+//        'bukkit:bukkit-1.21.1',
 
         'fabric:fabric-1.14.4',
         'fabric:fabric-1.19',

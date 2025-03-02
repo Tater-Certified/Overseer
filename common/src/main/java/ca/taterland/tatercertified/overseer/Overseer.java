@@ -11,13 +11,13 @@ import ca.taterland.tatercertified.overseer.config.OverseerConfigLoader;
 import ca.taterland.tatercertified.overseer.ddos.DDOS;
 import ca.taterland.tatercertified.overseer.iplogger.IPLogger;
 
-import dev.neuralnexus.taterapi.MinecraftVersion;
-import dev.neuralnexus.taterapi.Platform;
 import dev.neuralnexus.taterapi.TaterAPIProvider;
+import dev.neuralnexus.taterapi.event.api.PluginEvents;
 import dev.neuralnexus.taterapi.event.api.ServerEvents;
+import dev.neuralnexus.taterapi.loader.impl.LoaderImpl;
+import dev.neuralnexus.taterapi.loader.plugin.Plugin;
 import dev.neuralnexus.taterapi.logger.Logger;
-import dev.neuralnexus.taterloader.event.api.PluginEvents;
-import dev.neuralnexus.taterloader.plugin.Plugin;
+import dev.neuralnexus.taterapi.meta.MetaAPI;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -54,13 +54,16 @@ public class Overseer implements Plugin {
 
     @Override
     public void onEnable() {
+        MetaAPI api = MetaAPI.instance();
         logger.info(
-                Overseer.PROJECT_NAME
+                LoaderImpl.PROJECT_NAME
                         + " is running on "
-                        + Platform.get()
+                        + api.platform()
                         + " "
-                        + MinecraftVersion.get()
-                        + "!");
+                        + api.version()
+                        + ", with "
+                        + api.mappings()
+                        + " mappings!");
         PluginEvents.DISABLED.register(event -> onDisable());
 
         // Config

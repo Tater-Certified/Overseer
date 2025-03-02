@@ -19,5 +19,8 @@ dependencies {
     paperweight.paperDevBundle("${minecraft_version}-${bukkit_version}")
     compileOnly('com.comphenix.protocol:ProtocolLib:5.1.0')
     compileOnly("dev.neuralnexus:taterapi:${taterlib_version}")
+    compileOnly(variantOf(libs.modapi) {
+        classifier("downgraded-8")
+    })
     compileOnly(project(':common'))
 }
